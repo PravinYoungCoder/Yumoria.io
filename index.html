@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>YUMORIA — Joy in Every Bite</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+<style>
+  /* ===== CSS VARIABLES ===== */
+  :root {
+    --accent1: #FF6B35;
+    --accent2: #FFD23F;
+    --accent3: #06D6A0;
+    --accent4: #EF476F;
+    --accent5: #118AB2;
+  }
+  [data-theme="dark"] {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #1a1a1a;
+    --text: #f5f0e8;
+    --text2: #a89f8c;
+    --card-bg: #161616;
+    --border: rgba(255,255,255,0.08);
+    --grid-color: rgba(255,255,255,0.04);
+    --nav-bg: rgba(10,10,10,0.85);
+    --shadow: rgba(0,0,0,0.6);
+    --glass: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.1);
+  }
+  [data-theme="light"] {
+    --bg: #faf8f4;
+    --bg2: #f0ece3;
+    --bg3: #e8e2d6;
+    --text: #1a1410;
+    --text2: #6b5f4e;
+    --card-bg: #ffffff;
+    --border: rgba(0,0,0,0.08);
+    --grid-color: rgba(0,0,0,0.05);
+    --nav-bg: rgba(250,248,244,0.9);
+    --shadow: rgba(0,0,0,0.12);
+    --glass: rgba(0,0,0,0.03);
+    --glass-border: rgba(0,0,0,0.1);
+  }
+
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  /* ===== GRID BACKGROUND ===== */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .grid-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, transparent 40%, var(--bg) 100%);
+  }
+
+  /* ===== NAVBAR ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 2rem;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--nav-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.4s ease;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .nav-logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transform: rotate(-5deg);
+    box-shadow: 0 4px 15px rgba(255,107,53,0.4);
+    transition: transform 0.3s ease;
+  }
+  .nav-logo-icon:hover { transform: rotate(5deg) scale(1.1); }
+  .nav-logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    color: var(--text);
+    line-height: 1;
+  }
+  .nav-logo-text span { color: var(--accent1); }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--text2);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 50px;
+    transition: all 0.25s ease;
+    letter-spacing: 0.3px;
+  }
+  .nav-links a:hover { color: var(--text); background: var(--glass); }
+  .nav-cta {
+    background: linear-gradient(135deg, var(--accent1), var(--accent4)) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 9px 20px !important;
+    box-shadow: 0 4px 15px rgba(255,107,53,0.35);
+  }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,0.5) !important; background: var(--glass) !important; }
+  .theme-toggle {
+    width: 44px;
+    height: 24px;
+    background: var(--bg3);
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+  .theme-toggle::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: 2px; left: 3px;
+    background: var(--accent2);
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  [data-theme="light"] .theme-toggle::before { transform: translateX(19px); background: var(--accent1); }
+  .theme-icon { font-size: 0.7rem; position: absolute; top: 50%; transform: translateY(-50%); }
+  .moon-icon { left: 5px; }
+  .sun-icon { right: 5px; }
+
+  /* ===== HERO SECTION ===== */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-blob1 {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    top: -100px;
+    right: -200px;
+    background: radial-gradient(circle, rgba(255,107,53,0.15) 0%, transparent 70%);
+    border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%;
+    animation: morphBlob 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .hero-blob2 {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    bottom: 0;
+    left: -100px;
+    background: radial-gradient(circle, rgba(6,214,160,0.12) 0%, transparent 70%);
+    border-radius: 40% 60% 30% 70% / 60% 40% 70% 30%;
+    animation: morphBlob 10s ease-in-out infinite reverse;
+    pointer-events: none;
+  }
+  @keyframes morphBlob {
+    0%, 100% { border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%; }
+    33% { border-radius: 30% 70% 40% 60% / 70% 30% 60% 40%; }
+    66% { border-radius: 50% 50% 60% 40% / 40% 60% 50% 50%; }
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 900px;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text2);
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-badge span { color: var(--accent3); font-weight: 600; }
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -3px;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+  .hero-title .line1 { display: block; color: var(--text); }
+  .hero-title .line2 {
+    display: block;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+    background-size: 200%;
+  }
+  @keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: var(--text2);
+    max-width: 560px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+  .hero-sub strong { color: var(--accent1); font-weight: 600; }
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent4));
+    color: white;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 14px 32px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 8px 30px rgba(255,107,53,0.4);
+    transition: all 0.3s ease;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 40px rgba(255,107,53,0.55); }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--glass);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 14px 28px;
+    border-radius: 50px;
+    border: 1px solid var(--glass-border);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  .btn-secondary:hover { background: var(--bg3); transform: translateY(-2px); border-color: var(--accent1); }
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    justify-content: center;
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border);
+    animation: fadeUp 0.8s 0.4s ease both;
+    flex-wrap: wrap;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    line-height: 1;
+    color: var(--accent2);
+    display: block;
+  }
+  .stat-label { font-size: 0.8rem; color: var(--text2); margin-top: 4px; letter-spacing: 0.5px; }
+  
+  /* Hero image strip */
+  .hero-img-strip {
+    display: flex;
+    gap: 12px;
+    margin-top: 3rem;
+    justify-content: center;
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+  .hero-img-pill {
+    width: 120px;
+    height: 160px;
+    border-radius: 80px;
+    overflow: hidden;
+    border: 2px solid var(--border);
+    transition: transform 0.4s ease;
+    flex-shrink: 0;
+  }
+  .hero-img-pill:nth-child(2) { transform: translateY(20px); }
+  .hero-img-pill:nth-child(4) { transform: translateY(20px); }
+  .hero-img-pill img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-img-pill:hover { transform: translateY(-5px) !important; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== CAROUSEL SECTION ===== */
+  #menu {
+    padding: 6rem 2rem;
+    position: relative;
+    z-index: 1;
+  }
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent1);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .section-label::before {
+    content: '';
+    width: 24px;
+    height: 2px;
+    background: var(--accent1);
+    border-radius: 2px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    margin-bottom: 0.75rem;
+  }
+  .section-sub { color: var(--text2); font-size: 1rem; max-width: 500px; line-height: 1.7; }
+
+  .carousel-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .carousel-controls {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  .ctrl-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--glass);
+    color: var(--text);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(10px);
+  }
+  .ctrl-btn:hover { background: var(--accent1); border-color: var(--accent1); color: white; transform: scale(1.08); }
+
+  .carousel-track-wrapper {
+    overflow: hidden;
+    position: relative;
+  }
+  .carousel-track {
+    display: flex;
+    gap: 1.5rem;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+  }
+  
+  /* Each card has a unique frame */
+  .menu-card {
+    flex: 0 0 300px;
+    position: relative;
+    cursor: pointer;
+  }
+  .menu-card-frame {
+    padding: 16px;
+    border-radius: 24px;
+    position: relative;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .menu-card:hover .menu-card-frame { transform: translateY(-8px); }
+  
+  /* Frame flavours */
+  .frame-fire {
+    background: linear-gradient(135deg, #FF6B35, #FF4500, #FFD23F);
+    box-shadow: 0 15px 40px rgba(255,107,53,0.3);
+  }
+  .frame-ocean {
+    background: linear-gradient(135deg, #118AB2, #06D6A0, #073B4C);
+    box-shadow: 0 15px 40px rgba(17,138,178,0.3);
+  }
+  .frame-candy {
+    background: linear-gradient(135deg, #EF476F, #FFD166, #FF6B6B);
+    box-shadow: 0 15px 40px rgba(239,71,111,0.3);
+  }
+  .frame-galaxy {
+    background: linear-gradient(135deg, #6A0572, #AB83A1, #118AB2);
+    box-shadow: 0 15px 40px rgba(106,5,114,0.3);
+  }
+  .frame-matcha {
+    background: linear-gradient(135deg, #06D6A0, #118AB2, #073B4C);
+    box-shadow: 0 15px 40px rgba(6,214,160,0.3);
+  }
+  .frame-sunrise {
+    background: linear-gradient(135deg, #FF9A3C, #FF6B35, #EF476F);
+    box-shadow: 0 15px 40px rgba(255,154,60,0.3);
+  }
+
+  /* Unique border shapes via clip-path on frame */
+  .frame-fire { border-radius: 30px 10px 30px 10px; }
+  .frame-ocean { border-radius: 10px 30px 10px 30px; }
+  .frame-candy { border-radius: 50% 20% 50% 20% / 20% 50% 20% 50%; }
+  .frame-galaxy { border-radius: 40px 10px 10px 40px; }
+  .frame-matcha { border-radius: 10px 40px 40px 10px; }
+  .frame-sunrise { border-radius: 30px; }
+
+  .menu-card-img-wrap {
+    border-radius: inherit;
+    overflow: hidden;
+    height: 240px;
+    position: relative;
+  }
+  .menu-card-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .menu-card:hover .menu-card-img-wrap img { transform: scale(1.07); }
+  .menu-card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 50px;
+    letter-spacing: 0.5px;
+  }
+  .menu-card-body {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 1.2rem 1.2rem 1rem;
+    margin-top: 12px;
+    border: 1px solid var(--border);
+  }
+  .menu-card-emoji { font-size: 1.6rem; margin-bottom: 0.5rem; display: block; }
+  .menu-card-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+    color: var(--text);
+  }
+  .menu-card-desc {
+    font-size: 0.83rem;
+    color: var(--text2);
+    line-height: 1.55;
+    margin-bottom: 1rem;
+  }
+  .menu-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .menu-card-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--accent2);
+    line-height: 1;
+  }
+  .menu-card-price span { font-size: 0.9rem; color: var(--text2); font-family: 'Space Grotesk', sans-serif; font-weight: 400; }
+  .btn-order-now {
+    background: linear-gradient(135deg, var(--accent1), var(--accent4));
+    color: white;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 50px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(255,107,53,0.35);
+  }
+  .btn-order-now:hover { transform: scale(1.08); box-shadow: 0 6px 18px rgba(255,107,53,0.55); }
+
+  .carousel-dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border);
+  }
+  .dot.active { background: var(--accent1); width: 24px; border-radius: 4px; border-color: var(--accent1); }
+
+  /* ===== ABOUT SECTION ===== */
+  #about {
+    padding: 6rem 2rem;
+    position: relative;
+    z-index: 1;
+  }
+  .about-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .about-visual {
+    position: relative;
+  }
+  .about-img-main {
+    width: 100%;
+    height: 460px;
+    object-fit: cover;
+    border-radius: 40% 20% 40% 20% / 20% 40% 20% 40%;
+    border: 3px solid var(--accent1);
+    animation: morphBlob 8s ease-in-out infinite;
+    box-shadow: 0 20px 60px var(--shadow), 0 0 0 8px rgba(255,107,53,0.1);
+  }
+  .about-float-card {
+    position: absolute;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1rem 1.2rem;
+    backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 10px 30px var(--shadow);
+  }
+  .about-float-1 { bottom: -20px; left: -20px; }
+  .about-float-2 { top: 40px; right: -20px; }
+  .float-emoji { font-size: 1.8rem; }
+  .float-text strong { display: block; font-size: 0.9rem; color: var(--text); font-weight: 700; }
+  .float-text span { font-size: 0.75rem; color: var(--text2); }
+  .about-content .section-label { margin-bottom: 1rem; }
+  .about-content .section-title { margin-bottom: 1.5rem; }
+  .about-body {
+    color: var(--text2);
+    line-height: 1.8;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  .about-body p { margin-bottom: 1rem; }
+  .about-body strong { color: var(--text); font-weight: 600; }
+  .about-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+  }
+  .tag {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    color: var(--text2);
+    font-weight: 500;
+    transition: all 0.25s ease;
+  }
+  .tag:hover { background: var(--accent1); color: white; border-color: var(--accent1); }
+
+  /* ===== MARQUEE ===== */
+  .marquee-section {
+    padding: 1.5rem 0;
+    background: linear-gradient(135deg, var(--accent1), var(--accent4));
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+  .marquee-track {
+    display: flex;
+    gap: 2.5rem;
+    animation: marquee 25s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.95);
+    flex-shrink: 0;
+  }
+  .marquee-item::after { content: '★'; color: rgba(255,255,255,0.5); }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ===== VIBE SECTION ===== */
+  #vibe {
+    padding: 6rem 2rem;
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .vibe-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+    gap: 1.2rem;
+    margin-top: 3rem;
+  }
+  .vibe-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .vibe-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: linear-gradient(135deg, var(--accent1), var(--accent4));
+    z-index: 0;
+  }
+  .vibe-card:hover::before { opacity: 0.06; }
+  .vibe-card:hover { transform: translateY(-5px); border-color: var(--accent1); box-shadow: 0 15px 40px var(--shadow); }
+  .vibe-card * { position: relative; z-index: 1; }
+  .vibe-card.featured {
+    grid-column: span 2;
+    background: linear-gradient(135deg, var(--accent1), var(--accent4));
+    border-color: transparent;
+    color: white;
+  }
+  .vibe-card.featured .vibe-body { color: rgba(255,255,255,0.85); }
+  .vibe-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+  .vibe-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+  .vibe-card.featured .vibe-title { color: white; }
+  .vibe-body { font-size: 0.88rem; color: var(--text2); line-height: 1.65; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .footer-top {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem 3rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+  }
+  .footer-brand .nav-logo { margin-bottom: 1rem; display: flex; }
+  .footer-brand p { color: var(--text2); font-size: 0.88rem; line-height: 1.7; max-width: 280px; margin-bottom: 1.5rem; }
+  .footer-socials { display: flex; gap: 0.6rem; }
+  .social-btn {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text2);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+  }
+  .social-btn:hover { background: var(--accent1); color: white; border-color: var(--accent1); transform: translateY(-3px); }
+  .footer-col h4 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 1.2rem; color: var(--text); }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.6rem; }
+  .footer-col ul a { color: var(--text2); text-decoration: none; font-size: 0.88rem; transition: color 0.2s; }
+  .footer-col ul a:hover { color: var(--accent1); }
+  .footer-col .contact-item { display: flex; align-items: center; gap: 8px; color: var(--text2); font-size: 0.88rem; margin-bottom: 0.7rem; }
+  .contact-item span:first-child { font-size: 1rem; }
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-bottom p { color: var(--text2); font-size: 0.82rem; }
+  .footer-bottom p span { color: var(--accent1); }
+  .footer-legal { display: flex; gap: 1.5rem; }
+  .footer-legal a { color: var(--text2); font-size: 0.82rem; text-decoration: none; transition: color 0.2s; }
+  .footer-legal a:hover { color: var(--accent1); }
+  .footer-blob {
+    position: absolute;
+    bottom: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255,107,53,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%;
+  }
+
+  /* ===== SECTION DIVIDER ===== */
+  .wavy-divider {
+    position: relative;
+    z-index: 1;
+    line-height: 0;
+  }
+  .wavy-divider svg { display: block; width: 100%; }
+
+  /* ===== SCROLL REVEAL ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== TOAST NOTIFICATION ===== */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 15px 40px var(--shadow);
+    backdrop-filter: blur(20px);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 320px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-icon { font-size: 1.5rem; }
+  .toast-text strong { display: block; font-size: 0.9rem; color: var(--text); font-weight: 700; }
+  .toast-text span { font-size: 0.8rem; color: var(--text2); }
+  .toast-close { margin-left: auto; background: none; border: none; color: var(--text2); cursor: pointer; font-size: 1rem; padding: 4px; }
+
+  /* ===== MAX WIDTH CONTAINERS ===== */
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .about-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .vibe-grid { grid-template-columns: 1fr 1fr; }
+    .vibe-card.featured { grid-column: span 2; }
+    .hero-img-strip { display: none; }
+  }
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .footer-top { grid-template-columns: 1fr; }
+    .vibe-grid { grid-template-columns: 1fr; }
+    .vibe-card.featured { grid-column: span 1; }
+    .hero-title { letter-spacing: -1.5px; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+  }
+
+  /* ===== AI IMAGE PLACEHOLDER ===== */
+  .ai-img-bg {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .ai-img-bg::after {
+    content: 'AI Generated';
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-size: 0.6rem;
+    font-family: 'Space Grotesk', sans-serif;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 1px;
+  }
+  [data-theme="light"] .ai-img-bg { background: linear-gradient(135deg, #e0dcd4 0%, #d0c8bc 100%); }
+
+  /* ===== NOISE OVERLAY ===== */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">🎉</span>
+  <div class="toast-text">
+    <strong>Order placed!</strong>
+    <span>We're cooking it with vibes rn 🔥</span>
+  </div>
+  <button class="toast-close" onclick="dismissToast()">✕</button>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    <div class="nav-logo-icon">☕</div>
+    <div class="nav-logo-text">YUM<span>ORIA</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#vibe">Vibes</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#menu" class="nav-cta">Order Now 🛒</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+    <span class="theme-icon moon-icon">🌙</span>
+    <span class="theme-icon sun-icon">☀️</span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-blob1"></div>
+  <div class="hero-blob2"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">✨ <span>Now Open in Your City</span> — The cafe that gets you</div>
+    <h1 class="hero-title">
+      <span class="line1">Where Joy</span>
+      <span class="line2">Meets Hunger</span>
+    </h1>
+    <p class="hero-sub">
+      No cap — this is the <strong>most affordable</strong> gourmet cafe your timeline has been manifesting. 
+      Real food. Real vibes. Real cheap. We slay on every plate. 🍽️
+    </p>
+    <div class="hero-actions">
+      <a href="#menu" class="btn-primary">🍔 Order Now, Regret Never</a>
+      <a href="#about" class="btn-secondary">✌️ Our Story</a>
+    </div>
+
+    <div class="hero-img-strip">
+      <div class="hero-img-pill">
+        <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=300&h=400&fit=crop" alt="Desserts" loading="lazy"/>
+      </div>
+      <div class="hero-img-pill">
+        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&h=400&fit=crop" alt="Pizza" loading="lazy"/>
+      </div>
+      <div class="hero-img-pill">
+        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=400&fit=crop" alt="Healthy" loading="lazy"/>
+      </div>
+      <div class="hero-img-pill">
+        <img src="https://images.unsplash.com/photo-1541614101331-1a5a3a194e92?w=300&h=400&fit=crop" alt="Drinks" loading="lazy"/>
+      </div>
+      <div class="hero-img-pill">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300&h=400&fit=crop" alt="Food platter" loading="lazy"/>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">420+</span>
+        <div class="stat-label">Happy Bellies Daily</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">₹99</span>
+        <div class="stat-label">Starting Meal Price</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">4.9★</span>
+        <div class="stat-label">Zomato / Swiggy</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">69</span>
+        <div class="stat-label">Menu Items (lol yes)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marqueeTrack">
+    <div class="marquee-item">AFFORDABLE AF</div>
+    <div class="marquee-item">FIRE FOOD</div>
+    <div class="marquee-item">NO CAP TASTE</div>
+    <div class="marquee-item">JOY ON A PLATE</div>
+    <div class="marquee-item">YUMORIA IS THE WAY</div>
+    <div class="marquee-item">EAT HAPPY LIVE HAPPY</div>
+    <div class="marquee-item">CERTIFIED BUSSIN</div>
+    <div class="marquee-item">YOUR WALLET APPROVES</div>
+    <!-- duplicate for seamless -->
+    <div class="marquee-item">AFFORDABLE AF</div>
+    <div class="marquee-item">FIRE FOOD</div>
+    <div class="marquee-item">NO CAP TASTE</div>
+    <div class="marquee-item">JOY ON A PLATE</div>
+    <div class="marquee-item">YUMORIA IS THE WAY</div>
+    <div class="marquee-item">EAT HAPPY LIVE HAPPY</div>
+    <div class="marquee-item">CERTIFIED BUSSIN</div>
+    <div class="marquee-item">YOUR WALLET APPROVES</div>
+  </div>
+</div>
+
+<!-- MENU CAROUSEL -->
+<section id="menu" style="position:relative;z-index:1;">
+  <div class="container" style="padding: 6rem 2rem;">
+    <div class="carousel-header reveal">
+      <div>
+        <div class="section-label">🍽️ Our Hits</div>
+        <h2 class="section-title">The Menu That<br/>Broke the Internet</h2>
+        <p class="section-sub">Each dish hits different. Each frame's a whole vibe. Swipe through and find your next obsession.</p>
+      </div>
+      <div class="carousel-controls">
+        <button class="ctrl-btn" id="prevBtn" onclick="prevSlide()">←</button>
+        <button class="ctrl-btn" id="nextBtn" onclick="nextSlide()">→</button>
+      </div>
+    </div>
+
+    <div class="carousel-track-wrapper reveal">
+      <div class="carousel-track" id="carouselTrack">
+
+        <!-- Card 1 - Fire Frame -->
+        <div class="menu-card">
+          <div class="menu-card-frame frame-fire">
+            <div class="menu-card-img-wrap">
+              <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=480&fit=crop" alt="Smash Burger" loading="lazy"/>
+              <span class="menu-card-badge">🔥 BESTSELLER</span>
+            </div>
+          </div>
+          <div class="menu-card-body">
+            <span class="menu-card-emoji">🍔</span>
+            <div class="menu-card-name">The Smash Hit Burger</div>
+            <div class="menu-card-desc">Double smash patty, caramelised onions, secret sauce that we literally can't tell you about (NDA). Hits every time.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">₹149 <span>/plate</span></div>
+              <button class="btn-order-now" onclick="triggerOrder('The Smash Hit Burger')">Order Now 🛒</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 - Ocean Frame -->
+        <div class="menu-card">
+          <div class="menu-card-frame frame-ocean">
+            <div class="menu-card-img-wrap">
+              <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=600&h=480&fit=crop" alt="Waffles" loading="lazy"/>
+              <span class="menu-card-badge">💙 FAN FAV</span>
+            </div>
+          </div>
+          <div class="menu-card-body">
+            <span class="menu-card-emoji">🧇</span>
+            <div class="menu-card-name">Cloud Waffle Stack</div>
+            <div class="menu-card-desc">Fluffy as your situationship's promises but wayyyy more reliable. Drizzled with maple, berries, and serotonin.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">₹129 <span>/stack</span></div>
+              <button class="btn-order-now" onclick="triggerOrder('Cloud Waffle Stack')">Order Now 🛒</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 - Candy Frame -->
+        <div class="menu-card">
+          <div class="menu-card-frame frame-candy">
+            <div class="menu-card-img-wrap">
+              <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=480&fit=crop" alt="Pizza" loading="lazy"/>
+              <span class="menu-card-badge">🍕 VIRAL</span>
+            </div>
+          </div>
+          <div class="menu-card-body">
+            <span class="menu-card-emoji">🍕</span>
+            <div class="menu-card-name">Chaos Theory Pizza</div>
+            <div class="menu-card-desc">No rules, just vibes. Six toppings that shouldn't work together but absolutely do. Your taste buds will not believe this is real.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">₹199 <span>/pie</span></div>
+              <button class="btn-order-now" onclick="triggerOrder('Chaos Theory Pizza')">Order Now 🛒</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 - Galaxy Frame -->
+        <div class="menu-card">
+          <div class="menu-card-frame frame-galaxy">
+            <div class="menu-card-img-wrap">
+              <img src="https://images.unsplash.com/photo-1541614101331-1a5a3a194e92?w=600&h=480&fit=crop" alt="Coffee" loading="lazy"/>
+              <span class="menu-card-badge">☕ MUST TRY</span>
+            </div>
+          </div>
+          <div class="menu-card-body">
+            <span class="menu-card-emoji">☕</span>
+            <div class="menu-card-name">Galaxy Cold Brew</div>
+            <div class="menu-card-desc">48-hour slow brewed, lavender tinted, oat-milked perfection. It looks like a black hole. It tastes like an awakening. Dark academia in a cup.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">₹99 <span>/cup</span></div>
+              <button class="btn-order-now" onclick="triggerOrder('Galaxy Cold Brew')">Order Now 🛒</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 - Matcha Frame -->
+        <div class="menu-card">
+          <div class="menu-card-frame frame-matcha">
+            <div class="menu-card-img-wrap">
+              <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=480&fit=crop" alt="Bowl" loading="lazy"/>
+              <span class="menu-card-badge">🌿 HEALTHY SLAY</span>
+            </div>
+          </div>
+          <div class="menu-card-body">
+            <span class="menu-card-emoji">🥗</span>
+            <div class="menu-card-name">The Wellness Lie Bowl</div>
+            <div class="menu-card-desc">It's actually super healthy. We just called it a Wellness Lie because it tastes too good to be good for you. Quinoa, halloumi, tahini drip.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">₹169 <span>/bowl</span></div>
+              <button class="btn-order-now" onclick="triggerOrder('The Wellness Lie Bowl')">Order Now 🛒</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 - Sunrise Frame -->
+        <div class="menu-card">
+          <div class="menu-card-frame frame-sunrise">
+            <div class="menu-card-img-wrap">
+              <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=480&fit=crop" alt="Platter" loading="lazy"/>
+              <span class="menu-card-badge">🌅 BRUNCH KING</span>
+            </div>
+          </div>
+          <div class="menu-card-body">
+            <span class="menu-card-emoji">🍳</span>
+            <div class="menu-card-name">Sunrise Platter</div>
+            <div class="menu-card-desc">Eggs three ways, sourdough toast, avocado smash, and a tiny pot of honey because you deserve sweetness. Served with zero judgment.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">₹219 <span>/platter</span></div>
+              <button class="btn-order-now" onclick="triggerOrder('Sunrise Platter')">Order Now 🛒</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="carousel-dots reveal" id="carouselDots">
+      <div class="dot active" onclick="goToSlide(0)"></div>
+      <div class="dot" onclick="goToSlide(1)"></div>
+      <div class="dot" onclick="goToSlide(2)"></div>
+      <div class="dot" onclick="goToSlide(3)"></div>
+      <div class="dot" onclick="goToSlide(4)"></div>
+      <div class="dot" onclick="goToSlide(5)"></div>
+    </div>
+  </div>
+</section>
+
+<!-- VIBE SECTION -->
+<section id="vibe">
+  <div class="section-label reveal">✨ Why Us</div>
+  <h2 class="section-title reveal">The Yumoria<br/>Difference, Bestie</h2>
+  <div class="vibe-grid reveal">
+    <div class="vibe-card featured">
+      <span class="vibe-icon">💸</span>
+      <div class="vibe-title">Broke-Friendly Prices (fr fr)</div>
+      <div class="vibe-body">We did the math so you don't have to. Every single item on our menu costs less than your last Uber ride. Gourmet taste, street food budget. The audacity of affordability.</div>
+    </div>
+    <div class="vibe-card">
+      <span class="vibe-icon">⚡</span>
+      <div class="vibe-title">Speed Run Delivery</div>
+      <div class="vibe-body">Average delivery time: 22 minutes. Faster than your next excuse to not go to the gym.</div>
+    </div>
+    <div class="vibe-card">
+      <span class="vibe-icon">🎨</span>
+      <div class="vibe-title">Aesthetic AF Plating</div>
+      <div class="vibe-body">Your food will ALWAYS be Insta-ready. We plate for the gram, but we cook for the soul.</div>
+    </div>
+    <div class="vibe-card">
+      <span class="vibe-icon">🌱</span>
+      <div class="vibe-title">Sustainably Sourced</div>
+      <div class="vibe-body">Local farms, real ingredients, zero mystery meat. We know our farmers by name (and vibe).</div>
+    </div>
+    <div class="vibe-card">
+      <span class="vibe-icon">🧠</span>
+      <div class="vibe-title">Chef-Curated Weekly Drops</div>
+      <div class="vibe-body">New limited dishes every Friday. Like a sneaker drop but edible. And way more satisfying.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-visual reveal">
+      <img 
+        src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=700&h=700&fit=crop" 
+        alt="Yumoria Cafe interior" 
+        class="about-img-main"
+        loading="lazy"
+      />
+      <div class="about-float-card about-float-1">
+        <span class="float-emoji">📍</span>
+        <div class="float-text">
+          <strong>Walk-in or Delivery</strong>
+          <span>Available in 12 cities</span>
+        </div>
+      </div>
+      <div class="about-float-card about-float-2">
+        <span class="float-emoji">🏆</span>
+        <div class="float-text">
+          <strong>#1 Café Vibes</strong>
+          <span>Voted by Gen Z, 2024</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-content">
+      <div class="section-label">🙋 About Yumoria</div>
+      <h2 class="section-title">We're Not Your<br/>Average Cafe, Babe</h2>
+      <div class="about-body reveal">
+        <p>Okay real talk — Yumoria started because two broke college students were TIRED of choosing between <strong>eating good</strong> and <strong>not being broke</strong>. Plot twist: you should never have to.</p>
+        <p>We built this whole thing on one philosophy: <strong>joy is not a luxury.</strong> Good food shouldn't cost half your rent. A great cafe shouldn't have dress codes. And your order shouldn't take 45 mins when you're hangry AF.</p>
+        <p>So yeah. We're the cafe that finally gets it. We get YOU. We're affordable, we're aesthetic, we're chaotic, we're wholesome, and most importantly — <strong>we're delicious.</strong> No gatekeeping. Just good food.</p>
+        <p>Come for the menu. Stay for the vibes. Leave with leftovers. <strong>That's the Yumoria promise.</strong> ✌️</p>
+      </div>
+      <div class="about-tags">
+        <span class="tag">✌️ Gen-Z Approved</span>
+        <span class="tag">💸 Affordable</span>
+        <span class="tag">🌱 Sustainable</span>
+        <span class="tag">📸 Photogenic</span>
+        <span class="tag">🔥 Bussin Always</span>
+        <span class="tag">⚡ Fast Delivery</span>
+        <span class="tag">🌍 12 Cities</span>
+        <span class="tag">❤️ No Cap Love</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="footer-blob"></div>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="nav-logo">
+        <div class="nav-logo-icon">☕</div>
+        <div class="nav-logo-text">YUM<span>ORIA</span></div>
+      </div>
+      <p>Joy in every bite. Affordable always. The cafe your generation actually deserves. Serving happiness since 2021.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn" title="Instagram">📸</a>
+        <a href="#" class="social-btn" title="Twitter/X">🐦</a>
+        <a href="#" class="social-btn" title="YouTube">▶️</a>
+        <a href="#" class="social-btn" title="TikTok">🎵</a>
+        <a href="#" class="social-btn" title="WhatsApp">💬</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#vibe">Why Yumoria</a></li>
+        <li><a href="#">Franchise</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Eat, Sleep, Repeat</h4>
+      <ul>
+        <li><a href="#">Track Your Order</a></li>
+        <li><a href="#">Gift a Meal 🎁</a></li>
+        <li><a href="#">Loyalty Points</a></li>
+        <li><a href="#">Group Orders</a></li>
+        <li><a href="#">Catering</a></li>
+        <li><a href="#">Reserve a Table</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <div class="contact-item"><span>📞</span><span>+91 74185 59692</span></div>
+      <div class="contact-item"><span>📧</span><span>pravinragavendran78@gmail.com</span></div>
+      <div class="contact-item"><span>📍</span><span>Available in 12 cities across India</span></div>
+      <div class="contact-item"><span>🕐</span><span>8 AM – 11 PM, Every Day</span></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 <span>Yumoria</span>. Made with ❤️ and too much coffee. All rights reserved.</p>
+    <div class="footer-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Cookie Settings</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ===== THEME TOGGLE =====
+  function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  }
+
+  // ===== CAROUSEL =====
+  let currentSlide = 0;
+  const cardWidth = 300 + 24; // width + gap
+  const totalSlides = 6;
+
+  function updateCarousel() {
+    const track = document.getElementById('carouselTrack');
+    track.style.transform = `translateX(-${currentSlide * cardWidth}px)`;
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === currentSlide);
+    });
+  }
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % totalSlides;
+    updateCarousel();
+  }
+  function prevSlide() {
+    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    updateCarousel();
+  }
+  function goToSlide(idx) {
+    currentSlide = idx;
+    updateCarousel();
+  }
+
+  // Auto slide
+  setInterval(nextSlide, 3800);
+
+  // Touch support
+  let touchStartX = 0;
+  const wrapper = document.querySelector('.carousel-track-wrapper');
+  if (wrapper) {
+    wrapper.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+    wrapper.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
+    });
+  }
+
+  // ===== TOAST =====
+  function triggerOrder(item) {
+    const toast = document.getElementById('toast');
+    toast.querySelector('.toast-text span').textContent = `${item} is on its way 🔥`;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+  function dismissToast() {
+    document.getElementById('toast').classList.remove('show');
+  }
+
+  // ===== SCROLL REVEAL =====
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ===== NAV SCROLL EFFECT =====
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.height = window.scrollY > 50 ? '60px' : '72px';
+  });
+
+  // ===== SMOOTH SCROLL FOR NAV LINKS =====
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+</body>
+</html>
